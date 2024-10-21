@@ -35,12 +35,11 @@ int main() {
             if (cur_pos > pos[cur_index].end) {
                 cur_pos = pos[cur_index].end;
             }
-            int i = cur_index;
-            while (i < n && cur_pos >= pos[i].start) {
-                if (pos[i].end <= cur_pos) {
-                    cur_pos = pos[i].end;
+            while (cur_index < n && cur_pos >= pos[cur_index].start) {
+                if (pos[cur_index].end <= cur_pos) {
+                    cur_pos = pos[cur_index].end;
                 }
-                i++;
+                cur_index++;
             }
             while (cur_index < n && pos[cur_index].start <= cur_pos) {
                 cur_index++;
