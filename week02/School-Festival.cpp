@@ -8,7 +8,6 @@
 typedef struct {
     int start;
     int end;
-    bool visited;
 } POS;
 POS pos[N];
 
@@ -25,7 +24,6 @@ int main() {
     for (int i = 0; i < n; i++) {
         std::cin >> pos[i].start;
         std::cin >> pos[i].end;
-        pos[i].visited = false;
     }
     std::sort(pos, pos + n, my_compare);
     int time = 0;
@@ -37,17 +35,14 @@ int main() {
             if (cur_pos > pos[cur_index].end) {
                 cur_pos = pos[cur_index].end;
             }
-            pos[cur_index].visited = true;
             int i = cur_index;
             while (i < n && cur_pos >= pos[i].start) {
-                if (!pos[i].visited && pos[i].end <= cur_pos) {
-                    pos[i].visited = true;
+                if (pos[i].end <= cur_pos) {
                     cur_pos = pos[i].end;
                 }
                 i++;
             }
             while (cur_index < n && pos[cur_index].start <= cur_pos) {
-                pos[cur_index].visited = true;
                 cur_index++;
             }
         }
