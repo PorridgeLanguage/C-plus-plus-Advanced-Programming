@@ -37,7 +37,7 @@ int main() {
       int character_id;
       char temp;
       std::string attribute;
-      int value;
+      double value;
       std::cin >> temp >> character_id >> attribute >> value;
       role_manager.set_attribute(character_id, attribute, value);
       // role_manager.list_normal();
@@ -63,7 +63,7 @@ int main() {
       char temp;
       int team_id;
       std::string attribute;
-      int value;
+      double value;
       std::cin >> temp >> team_id >> attribute >> value;
       role_manager.modify_team(team_id, attribute, value);
       // role_manager.list_normal();
@@ -88,7 +88,7 @@ int main() {
       int character_id;
       char temp;
       std::string equipment_type;
-      int value;
+      double value;
       std::cin >> temp >> character_id >> equipment_type >> value;
       role_manager.equip(character_id, equipment_type, value);
     }

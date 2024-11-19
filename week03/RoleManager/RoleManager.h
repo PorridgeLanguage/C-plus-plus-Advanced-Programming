@@ -17,7 +17,7 @@ class RoleManager {
  private:
   std::vector<int> role_ids;
 
-  static bool compare_by_power(const int& id_1, const int id_2) {
+  static bool compare_by_power(const int& id_1, const int& id_2) {
     double power_1 = roles[id_1].get_power();
     double power_2 = roles[id_2].get_power();
     if (power_1 != power_2) {
@@ -36,7 +36,7 @@ class RoleManager {
     role_ids.push_back(id);
   }
 
-  void set_attribute(int character_id, std::string attribute, int value) {
+  void set_attribute(int character_id, std::string attribute, double value) {
     switch (attribute[5]) {
       case 's':
         roles[character_id].set_base_strength(value);
@@ -60,21 +60,13 @@ class RoleManager {
     roles[character_id].equip_role(value);
   }
 
-  //   void equip(int character_id, std::string equip_type, double value) {
-  //     if (roles[character_id].get_role() == Warrior && equip_type == "weapon"  //
-  //         || roles[character_id].get_role() == Mage && equip_type == "staff"   //
-  //         || roles[character_id].get_role() == Rogue && equip_type == "stealth") {
-  //       roles[character_id].equip_role(value);
-  //     }
-  //   }
-
   void list_normal() {
     std::sort(role_ids.begin(), role_ids.end());
     for (int id : role_ids) {
       Role cur_role = roles[id];
-      int strength = cur_role.get_role() == Warrior ? cur_role.get_unique_attribute() : cur_role.get_base_strength();
-      int mana = cur_role.get_role() == Mage ? cur_role.get_unique_attribute() : cur_role.get_base_mana();
-      int agility = cur_role.get_role() == Rogue ? cur_role.get_unique_attribute() : cur_role.get_base_agility();
+      double strength = cur_role.get_role() == Warrior ? cur_role.get_unique_attribute() : cur_role.get_base_strength();
+      double mana = cur_role.get_role() == Mage ? cur_role.get_unique_attribute() : cur_role.get_base_mana();
+      double agility = cur_role.get_role() == Rogue ? cur_role.get_unique_attribute() : cur_role.get_base_agility();
       std::cout << "C" << id << " strength " << strength << " mana " << mana << " agility " << agility << "\n";
     }
   }
@@ -83,9 +75,9 @@ class RoleManager {
     std::sort(role_ids.begin(), role_ids.end(), compare_by_power);
     for (int id : role_ids) {
       Role cur_role = roles[id];
-      int strength = cur_role.get_role() == Warrior ? cur_role.get_unique_attribute() : cur_role.get_base_strength();
-      int mana = cur_role.get_role() == Mage ? cur_role.get_unique_attribute() : cur_role.get_base_mana();
-      int agility = cur_role.get_role() == Rogue ? cur_role.get_unique_attribute() : cur_role.get_base_agility();
+      double strength = cur_role.get_role() == Warrior ? cur_role.get_unique_attribute() : cur_role.get_base_strength();
+      double mana = cur_role.get_role() == Mage ? cur_role.get_unique_attribute() : cur_role.get_base_mana();
+      double agility = cur_role.get_role() == Rogue ? cur_role.get_unique_attribute() : cur_role.get_base_agility();
       std::cout << "C" << id << " strength " << strength << " mana " << mana << " agility " << agility << "\n";
     }
   }

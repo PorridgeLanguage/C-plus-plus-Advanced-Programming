@@ -51,7 +51,8 @@ class Role {
   }
 
   Role() {
-    this->character_id == 0;
+    this->character_id = 0;
+    this->grade = 0;
   }
   void set_base_strength(double base_strength) {
     this->base_strength = base_strength;
@@ -85,11 +86,11 @@ class Role {
     if (grade < 5) {
       grade++;
       if (role == Warrior) {
-        base_strength *= 1.1;
+        base_strength += base_strength * 0.1;
       } else if (role == Mage) {
-        base_mana *= 1.2;
+        base_mana += base_mana * 0.2;
       } else if (role == Rogue) {
-        base_agility *= 1.15;
+        base_agility += base_agility * 0.15;
       }
       update_unique_attribute();
       update_power();
