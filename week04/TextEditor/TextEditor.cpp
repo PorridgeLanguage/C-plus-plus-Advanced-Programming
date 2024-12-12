@@ -3,30 +3,24 @@
 
 using namespace std;
 
-list<char>::iterator cursor;
-list<char> buffer;
-string copyText;
-
 TextEditor::TextEditor() {
     // TODO: 用空文本初始化
-    buffer.clear();
-    copyText.clear();
-    cursor = buffer.begin();
+    cursor = text.begin();
+    copiedText = "";
 };
 
 void TextEditor::addText(const string& text) {
     // TODO: 将 text 添加到光标所在位置
     for (char c : text) {
-        cursor = buffer.insert(cursor, c);
-        cursor++;
+        this->text.insert(cursor, c);
     }
 }
 
 void TextEditor::deleteText(int length) {
     // TODO: 删除光标左边 length 个字符
-    while (length > 0 && cursor != buffer.begin()) {
-        cursor--;
-        cursor = buffer.erase(cursor);
+    while (length && cursor != text.begin()) {
+        cursor = prev(cursor);
+        cursor = text.erase(cursor);
         length--;
     }
 }
@@ -34,42 +28,41 @@ void TextEditor::deleteText(int length) {
 void TextEditor::moveCursor(int steps) {
     // TODO: 将光标向左向右移动
     if (steps > 0) {
-        while (steps > 0 && cursor != buffer.end()) {
-            cursor++;
+        while (steps && cursor != text.end()) {
+            cursor = next(cursor);
             steps--;
         }
     } else {
-        while (steps < 0 && cursor != buffer.begin()) {
-            cursor--;
-            steps++;
+        steps = -steps;
+        while (steps && cursor != text.begin()) {
+            cursor = prev(cursor);
+            steps--;
         }
     }
 }
 
 void TextEditor::copy(int length) {
-    // TODO: 复制光标左侧 length 个字符
-    copyText.clear();
+    // 复制光标左边 length 个字符
+    copiedText.clear();  // 清空之前复制的内容
     auto it = cursor;
-    while (length > 0 && it != buffer.begin()) {
-        it--;
-        copyText.push_back(*it);
+    while (length && it != text.begin()) {
+        it = prev(it);
+        copiedText.insert(copiedText.begin(), *it);  // 插入复制的字符
         length--;
     }
-    reverse(copyText.begin(), copyText.end());
 }
 
 void TextEditor::paste() {
-    // TODO: 在光标处添加上一次复制的文本
-    for (char ch : copyText) {
-        cursor = buffer.insert(cursor, ch);
-        cursor++;
+    // 在光标位置粘贴复制的文本
+    for (char c : copiedText) {
+        text.insert(cursor, c);  // 插入复制的字符
     }
 }
 
 void TextEditor::print() {
-    // TODO: 输出当前编辑器内容
-    for (char ch : buffer) {
-        cout << ch;
+    // 输出当前文本
+    for (char c : text) {
+        std::cout << c;
     }
-    cout << endl;
+    std::cout << std::endl;
 }
