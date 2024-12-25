@@ -67,7 +67,7 @@
     if ((val1) == (val2)) { \
         assert((val1) != (val2)); \
     }
-    
+
 // 较小断言
 #define EXPECT_LT(val1, val2) \
     if (!((val1) < (val2))) { \

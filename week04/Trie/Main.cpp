@@ -1,76 +1,22 @@
-#include "SimpleGTest.h"
-#include "trie.h"
-#include "trie_store.h"
 #include <cassert>
 #include <cstdlib>
 #include <functional>
 #include <optional>
+#include "SimpleGTest.h"
+#include "trie.h"
+#include "trie_store.h"
+#include "gtest/gtest.h"
 
 using Integer = std::unique_ptr<uint32_t>;
 
-// === TRIE_TEST_CASES (71%) ===
-void TrieTest_ConstructorTest();
-void TrieTest_BasicPutTest();
-void TrieTest_TrieStructureCheck();
-void TrieTest_BasicPutGetTest();
-void TrieTest_PutGetOnePath();
-void TrieTest_BasicRemoveTest1();
-void TrieTest_BasicRemoveTest2();
-void TrieTest_RemoveFreeTest();
-void TrieTest_MismatchTypeTest();
-void TrieTest_CopyOnWriteTest1();
-void TrieTest_CopyOnWriteTest2();
-void TrieTest_CopyOnWriteTest3();
-void TrieTest_MixedTest();
-void TrieTest_PointerStability();
-void TrieTest_NonCopyableTest();
-
-// === TRIE_STROE_TEST_CASES (29%) ===
-void TrieStoreTest_BasicTest();
-void TrieStoreTest_GuardTest();
-void TrieStoreTest_MixedTest();
-void TrieStoreTest_MixedConcurrentTest();
-void TrieStoreTest_NonCopyableTest();
-void TrieStoreTest_ReadWriteTest();
-
-#define REGISTER_TEST_CASE(name) {#name, name}
-
-int main() {
-  std::unordered_map<std::string, std::function<void()>>
-      test_functions_by_name = {
-          REGISTER_TEST_CASE(TrieTest_ConstructorTest),
-          REGISTER_TEST_CASE(TrieTest_BasicPutTest),
-          REGISTER_TEST_CASE(TrieTest_TrieStructureCheck),
-          REGISTER_TEST_CASE(TrieTest_BasicPutGetTest),
-          REGISTER_TEST_CASE(TrieTest_PutGetOnePath),
-          REGISTER_TEST_CASE(TrieTest_BasicRemoveTest1),
-          REGISTER_TEST_CASE(TrieTest_BasicRemoveTest2),
-          REGISTER_TEST_CASE(TrieTest_RemoveFreeTest),
-          REGISTER_TEST_CASE(TrieTest_MismatchTypeTest),
-          REGISTER_TEST_CASE(TrieTest_CopyOnWriteTest1),
-          REGISTER_TEST_CASE(TrieTest_CopyOnWriteTest2),
-          REGISTER_TEST_CASE(TrieTest_CopyOnWriteTest3),
-          REGISTER_TEST_CASE(TrieTest_MixedTest),
-          REGISTER_TEST_CASE(TrieTest_PointerStability),
-          REGISTER_TEST_CASE(TrieTest_NonCopyableTest),
-          REGISTER_TEST_CASE(TrieStoreTest_BasicTest),
-          REGISTER_TEST_CASE(TrieStoreTest_GuardTest),
-          REGISTER_TEST_CASE(TrieStoreTest_MixedTest),
-          REGISTER_TEST_CASE(TrieStoreTest_MixedConcurrentTest),
-          REGISTER_TEST_CASE(TrieStoreTest_NonCopyableTest),
-          REGISTER_TEST_CASE(TrieStoreTest_ReadWriteTest),
-      };
-
-  std::string test_case_name;
-  std::cin >> test_case_name;
-  auto it = test_functions_by_name.find(test_case_name);
-  assert(it != test_functions_by_name.end());
-  auto fn = it->second;
-  fn();
-  return 0;
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
 
-TEST(TrieTest, ConstructorTest) { auto trie = Trie(); }
+TEST(TrieTest, ConstructorTest) {
+  auto trie = Trie();
+}
 
 TEST(TrieTest, BasicPutTest) {
   auto trie = Trie();
@@ -431,20 +377,20 @@ TEST(TrieStoreTest, MixedConcurrentTest) {
 
   for (int tid = 0; tid < 2; tid++) {
     std::thread t([&store, tid] {
-      for (uint32_t i = 0; i < keys_per_thread; i++) {
-        std::string key = fmt::format("{:#05}", i * 2 + tid);
-        std::string value = fmt::format("value-{:#08}", i * 2 + tid);
-        store.Put<std::string>(key, value);
-      }
-      for (uint32_t i = 0; i < keys_per_thread; i++) {
-        std::string key = fmt::format("{:#05}", i * 2 + tid);
-        store.Remove(key);
-      }
-      for (uint32_t i = 0; i < keys_per_thread; i++) {
-        std::string key = fmt::format("{:#05}", i * 2 + tid);
-        std::string value = fmt::format("new-value-{:#08}", i * 2 + tid);
-        store.Put<std::string>(key, value);
-      }
+        for (uint32_t i = 0; i < keys_per_thread; i++) {
+          std::string key = fmt::format("{:#05}", i * 2 + tid);
+          std::string value = fmt::format("value-{:#08}", i * 2 + tid);
+          store.Put<std::string>(key, value);
+        }
+        for (uint32_t i = 0; i < keys_per_thread; i++) {
+          std::string key = fmt::format("{:#05}", i * 2 + tid);
+          store.Remove(key);
+        }
+        for (uint32_t i = 0; i < keys_per_thread; i++) {
+          std::string key = fmt::format("{:#05}", i * 2 + tid);
+          std::string value = fmt::format("new-value-{:#08}", i * 2 + tid);
+          store.Put<std::string>(key, value);
+        }
     });
     threads.push_back(std::move(t));
   }
@@ -454,23 +400,23 @@ TEST(TrieStoreTest, MixedConcurrentTest) {
 
   for (int tid = 0; tid < 2; tid++) {
     std::thread t([&store, tid, stop] {
-      uint32_t i = 0;
-      while (!stop->load()) {
-        std::string key = fmt::format("{:#05}", i * 2 + tid);
-        store.Get<std::string>(key);
-        i = (i + 1) % keys_per_thread;
-      }
+        uint32_t i = 0;
+        while (!stop->load()) {
+          std::string key = fmt::format("{:#05}", i * 2 + tid);
+          store.Get<std::string>(key);
+          i = (i + 1) % keys_per_thread;
+        }
     });
     read_threads.push_back(std::move(t));
   }
 
-  for (auto &t : threads) {
+  for (auto &t: threads) {
     t.join();
   }
 
   stop->store(true);
 
-  for (auto &t : read_threads) {
+  for (auto &t: read_threads) {
     t.join();
   }
 
